@@ -1,4 +1,4 @@
-# Doctorcare backend
+# Careconnect backend
 
 ## PROJECT STRUCTURE
 
