@@ -1,20 +1,20 @@
-version: '3.1'
+version: "3.1"
 
 services:
-   adminer:
+  adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
 
-   mysql:
-        image: mysql
-        volumes:
-            - careconnect:/var/lib/mysql
-        environment:
-            MYSQL_ROOT_PASSWORD: password
-            MYSQL_DATABASE: careconnect
-        ports:
-          - 3306:3306
+  mysql:
+    image: mysql
+    volumes:
+      - careconnect:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: careconnect
+    ports:
+      - 3306:3306
 volumes:
-    careconnect:
+  careconnect:

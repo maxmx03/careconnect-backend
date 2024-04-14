@@ -7,26 +7,27 @@ import (
 type UserService struct{}
 
 func (s *UserService) CreateUser(user *UserModel, db *sql.DB) error {
-    query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+	query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
 
-    _, err := db.Exec(query, user.Username, user.Email, user.Password)
-    if err != nil {
-        return err
-    }
+	_, err := db.Exec(query, user.Username, user.Email, user.Password)
 
-    return nil
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (s *UserService) DeleteUser(id int, db *sql.DB) error {
-  query := "DELETE FROM users WHERE id = ?"
+func (s *UserService) DeleteUser(email string, db *sql.DB) error {
+	query := "DELETE FROM users WHERE email = ?"
 
-  _, err := db.Exec(query, id)
+	_, err := db.Exec(query, email)
 
-  if err!= nil {
-    return err
-  }
+	if err != nil {
+		return err
+	}
 
-  return nil
+	return nil
 }
 
 func (s *UserService) GetUserById(id int, db *sql.DB) (UserModel, error) {
@@ -34,7 +35,7 @@ func (s *UserService) GetUserById(id int, db *sql.DB) (UserModel, error) {
 
 	query := "SELECT * FROM users WHERE id = ?"
 
-	err := db.QueryRow(query, id).Scan(&user.ID)
+	err := db.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Password, &user.Email)
 
 	if err != nil {
 		return UserModel{}, err
@@ -46,7 +47,7 @@ func (s *UserService) GetUserById(id int, db *sql.DB) (UserModel, error) {
 func (s *UserService) GetUsers(db *sql.DB) ([]UserModel, error) {
 	var users []UserModel
 
-	query := "SELECT id, username, email, password FROM users"
+	query := "SELECT * FROM users"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -72,12 +73,13 @@ func (s *UserService) GetUsers(db *sql.DB) ([]UserModel, error) {
 
 func (s *UserService) UpdateUser(id int, newUser *UserModel, db *sql.DB) error {
 
-    query := "UPDATE users SET username=?, email=?, password=? WHERE id = ?"
+	query := "UPDATE users SET username=?, email=?, password=? WHERE id = ?"
 
-    _, err := db.Exec(query, newUser.Username, newUser.Email, newUser.Password, id)
-    if err != nil {
-        return err
-    }
+	_, err := db.Exec(query, newUser.Username, newUser.Email, newUser.Password, id)
 
-    return nil
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
