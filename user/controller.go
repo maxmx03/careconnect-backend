@@ -53,6 +53,23 @@ func (u *UserController) CreateUser(c echo.Context, db *sql.DB) error {
 	return c.JSON(http.StatusCreated, user)
 }
 
+func (u *UserController) UpdateUser(c echo.Context, db *sql.DB) error {
+	var user UserModel
+	var err error
+
+	if err := c.Bind(&user); err != nil {
+		return err
+	}
+
+	err = userService.UpdateUser(user.ID, &user, db)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update user"})
+	}
+
+	return c.JSON(http.StatusOK, "User updated successfully")
+}
+
 func (u *UserController) DeleteUser(c echo.Context, db *sql.DB) error {
 	var user UserModel
 	var err error

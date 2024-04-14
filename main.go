@@ -2,9 +2,10 @@ package main
 
 import (
 	"database/sql"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
-	. "github.com/maxmx03/careconnect-backend/user"
+	"github.com/maxmx03/careconnect-backend/user"
 )
 
 func main() {
@@ -17,20 +18,7 @@ func main() {
 
 	defer db.Close()
 
-	UserController := &UserController{}
-
-	e.GET("/users", func(c echo.Context) error {
-		return UserController.GetUsers(c, db)
-	})
-  e.GET("/user", func(c echo.Context) error {
-    return UserController.GetUserById(c, db)
-  })
-	e.POST("/user", func(c echo.Context) error {
-		return UserController.CreateUser(c, db)
-	})
-  e.DELETE("/user", func(c echo.Context) error {
-return UserController.DeleteUser(c, db)
-  })
+	user.Routes(e, db)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

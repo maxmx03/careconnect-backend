@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"errors"
 )
 
 type UserService struct{}
@@ -75,10 +76,19 @@ func (s *UserService) UpdateUser(id int, newUser *UserModel, db *sql.DB) error {
 
 	query := "UPDATE users SET username=?, email=?, password=? WHERE id = ?"
 
-	_, err := db.Exec(query, newUser.Username, newUser.Email, newUser.Password, id)
+	result, err := db.Exec(query, newUser.Username, newUser.Email, newUser.Password, id)
 
 	if err != nil {
 		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("no rows were updated, user not found")
 	}
 
 	return nil
