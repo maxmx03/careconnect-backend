@@ -7,48 +7,9 @@ import (
 
 type UserService struct{}
 
-func (s *UserService) CreateUser(user *UserModel, db *sql.DB) error {
-	query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
-
-	_, err := db.Exec(query, user.Username, user.Email, user.Password)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *UserService) DeleteUser(email string, db *sql.DB) error {
-	query := "DELETE FROM users WHERE email = ?"
-
-	_, err := db.Exec(query, email)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *UserService) GetUserById(id int, db *sql.DB) (UserModel, error) {
-	var user UserModel
-
-	query := "SELECT * FROM users WHERE id = ?"
-
-	err := db.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Password, &user.Email)
-
-	if err != nil {
-		return UserModel{}, err
-	}
-
-	return user, nil
-}
-
 func (s *UserService) GetUsers(db *sql.DB) ([]UserModel, error) {
 	var users []UserModel
-
-	query := "SELECT * FROM users"
+	query := "SELECT * FROM user"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -59,8 +20,7 @@ func (s *UserService) GetUsers(db *sql.DB) ([]UserModel, error) {
 
 	for rows.Next() {
 		var user UserModel
-
-		err := rows.Scan(&user.ID, &user.Username, &user.Email, &user.Password)
+		err := rows.Scan(&user.User_id, &user.Name, &user.Email, &user.Password, &user.Type)
 
 		if err != nil {
 			return nil, err
@@ -72,11 +32,42 @@ func (s *UserService) GetUsers(db *sql.DB) ([]UserModel, error) {
 	return users, nil
 }
 
-func (s *UserService) UpdateUser(id int, newUser *UserModel, db *sql.DB) error {
+func (s *UserService) GetUserById(user *UserModel, db *sql.DB) (*UserModel, error) {
+	query := "SELECT * FROM user WHERE user_id = ?"
+	err := db.QueryRow(query, user.User_id).Scan(&user.User_id, &user.Name, &user.Password, &user.Email, &user.Type)
 
-	query := "UPDATE users SET username=?, email=?, password=? WHERE id = ?"
+	if err != nil {
+		return &UserModel{}, err
+	}
 
-	result, err := db.Exec(query, newUser.Username, newUser.Email, newUser.Password, id)
+	return user, nil
+}
+
+func (s *UserService) CreateUser(user *UserModel, db *sql.DB) error {
+	query := "INSERT INTO user (name, email, password, type) VALUES (?, ?, ?, ?)"
+	_, err := db.Exec(query, user.Name, user.Email, user.Password, user.Type)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) DeleteUser(user *UserModel, db *sql.DB) error {
+	query := "DELETE FROM user WHERE email = ?"
+	_, err := db.Exec(query, user.Email)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) UpdateUser(user *UserModel, newUser *UserModel, db *sql.DB) error {
+	query := "UPDATE user SET name=?, email=?, password=?, type=? WHERE user_id = ?"
+	result, err := db.Exec(query, newUser.Name, newUser.Email, newUser.Password, newUser.Type, user.User_id)
 
 	if err != nil {
 		return err

@@ -5,22 +5,22 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Routes(e *echo.Echo, db *sql.DB) {
-	UserController := &UserController{}
+var userController = &UserController{}
 
+func Routes(e *echo.Echo, db *sql.DB) {
 	e.GET("/users", func(c echo.Context) error {
-		return UserController.GetUsers(c, db)
+		return userController.GetUsers(c, db)
 	})
 	e.GET("/user", func(c echo.Context) error {
-		return UserController.GetUserById(c, db)
+		return userController.GetUserById(c, db)
 	})
 	e.POST("/user", func(c echo.Context) error {
-		return UserController.CreateUser(c, db)
+		return userController.CreateUser(c, db)
 	})
 	e.PUT("/user", func(c echo.Context) error {
-		return UserController.UpdateUser(c, db)
+		return userController.UpdateUser(c, db)
 	})
 	e.DELETE("/user", func(c echo.Context) error {
-		return UserController.DeleteUser(c, db)
+		return userController.DeleteUser(c, db)
 	})
 }

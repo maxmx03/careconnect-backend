@@ -6,6 +6,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 type UserController struct{}
@@ -16,6 +17,7 @@ func (u *UserController) GetUsers(c echo.Context, db *sql.DB) error {
 	users, err := userService.GetUsers(db)
 
 	if err != nil {
+		log.Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch users"})
 	}
 
@@ -23,14 +25,15 @@ func (u *UserController) GetUsers(c echo.Context, db *sql.DB) error {
 }
 
 func (u *UserController) GetUserById(c echo.Context, db *sql.DB) error {
-	var user UserModel
+  user := &UserModel{}
 	var err error
 
-	if err := c.Bind(&user); err != nil {
+	if err := c.Bind(user); err != nil {
 		return err
 	}
 
-	if user, err = userService.GetUserById(user.ID, db); err != nil {
+	if user, err = userService.GetUserById(user, db); err != nil {
+		log.Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch users"})
 	}
 
@@ -47,6 +50,7 @@ func (u *UserController) CreateUser(c echo.Context, db *sql.DB) error {
 	err := userService.CreateUser(user, db)
 
 	if err != nil {
+		log.Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to create user"})
 	}
 
@@ -54,16 +58,17 @@ func (u *UserController) CreateUser(c echo.Context, db *sql.DB) error {
 }
 
 func (u *UserController) UpdateUser(c echo.Context, db *sql.DB) error {
-	var user UserModel
+  user := &UserModel{}
 	var err error
 
-	if err := c.Bind(&user); err != nil {
+	if err := c.Bind(user); err != nil {
 		return err
 	}
 
-	err = userService.UpdateUser(user.ID, &user, db)
+	err = userService.UpdateUser(user, user, db)
 
 	if err != nil {
+		log.Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update user"})
 	}
 
@@ -71,14 +76,15 @@ func (u *UserController) UpdateUser(c echo.Context, db *sql.DB) error {
 }
 
 func (u *UserController) DeleteUser(c echo.Context, db *sql.DB) error {
-	var user UserModel
+  user := &UserModel{}
 	var err error
 
-	if err := c.Bind(&user); err != nil {
+	if err := c.Bind(user); err != nil {
 		return err
 	}
 
-	if err = userService.DeleteUser(user.Email, db); err != nil {
+	if err = userService.DeleteUser(user, db); err != nil {
+		log.Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch users"})
 	}
 
