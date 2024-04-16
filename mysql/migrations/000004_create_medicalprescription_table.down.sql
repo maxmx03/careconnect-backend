@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS MedicalPrescription;
+DROP TABLE IF EXISTS medical_prescription;

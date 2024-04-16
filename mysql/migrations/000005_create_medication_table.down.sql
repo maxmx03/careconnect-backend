@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS Medication;
+DROP TABLE IF EXISTS medication;
