@@ -7,7 +7,7 @@ import (
 
 var userController = &UserController{}
 
-func Routes(e *echo.Echo, db *sql.DB) {
+func UserRoutes(e *echo.Echo, db *sql.DB) {
 	e.GET("/users", func(c echo.Context) error {
 		return userController.GetUsers(c, db)
 	})

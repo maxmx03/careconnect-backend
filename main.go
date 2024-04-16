@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/maxmx03/careconnect-backend/doctor"
 	"github.com/maxmx03/careconnect-backend/user"
 )
 
@@ -19,6 +20,7 @@ func main() {
 	}
 
 	defer db.Close()
-	user.Routes(e, db)
+	user.UserRoutes(e, db)
+	doctor.DoctorRoutes(e, db)
 	e.Logger.Fatal(e.Start(":3000"))
 }
