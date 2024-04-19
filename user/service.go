@@ -21,7 +21,7 @@ func (s *UserService) GetUsers(db *sql.DB) ([]UserModel, error) {
 	for rows.Next() {
 		var user UserModel
 
-		if err := rows.Scan(&user.User_id, &user.Name, &user.Email, &user.Password, &user.Type); err != nil {
+		if err := rows.Scan(&user.User_id, &user.Name, &user.Email, &user.Type, &user.Password); err != nil {
 			return nil, err
 		}
 
