@@ -4,9 +4,10 @@ import (
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
-	echojwt "github.com/labstack/echo-jwt/v4"
+	// echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/maxmx03/careconnect-backend/auth"
 	"github.com/maxmx03/careconnect-backend/doctor"
 	"github.com/maxmx03/careconnect-backend/user"
 )
@@ -14,9 +15,6 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
-	e.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey: []byte("secret"),
-	}))
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/careconnect")
 
 	if err != nil {
@@ -24,6 +22,7 @@ func main() {
 	}
 
 	defer db.Close()
+  auth.AuthRoutes(e, db)
 	user.UserRoutes(e, db)
 	doctor.DoctorRoutes(e, db)
 	e.Logger.Fatal(e.Start(":3000"))
