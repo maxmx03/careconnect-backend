@@ -10,7 +10,7 @@ import (
 
 var doctorController = &DoctorController{}
 
-func DoctorRoutes(e *echo.Echo, db *sql.DB) {
+func DoctorRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 	e.GET("/doctor", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
@@ -19,5 +19,5 @@ func DoctorRoutes(e *echo.Echo, db *sql.DB) {
 		}
 
 		return doctorController.GetDoctor(c, db)
-	})
+	}, m...)
 }
