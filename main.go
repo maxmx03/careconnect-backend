@@ -18,9 +18,8 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"https://localhost:4200"},
-	}))
+	e.Use(middleware.CORS())
+
 	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/careconnect")
 
 	if err != nil {

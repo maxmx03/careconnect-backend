@@ -8,7 +8,7 @@ import (
 var authController = &AuthController{}
 
 func AuthRoutes(e *echo.Echo, db *sql.DB) {
-	e.GET("/login", func(c echo.Context) error {
+	e.POST("/login", func(c echo.Context) error {
 		return authController.Login(c, db)
 	})
 }

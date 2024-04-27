@@ -28,7 +28,7 @@ func UserRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 	}, m...)
 	e.POST("/user", func(c echo.Context) error {
 		return userController.CreateUser(c, db)
-	}, m...)
+	})
 	e.PUT("/user", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
