@@ -1,4 +1,4 @@
-package user
+package patient
 
 import (
 	"database/sql"
@@ -7,42 +7,42 @@ import (
 	"net/http"
 )
 
-var userController = &UserController{}
+var patientController = &PatientController{}
 
-func UserRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
-	e.GET("/users", func(c echo.Context) error {
+func PatientRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
+	e.GET("/patients", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
 			})
 		}
-		return userController.GetUsers(c, db)
+		return patientController.GetPatients(c, db)
 	}, m...)
-	e.GET("/user", func(c echo.Context) error {
+	e.GET("/patient", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
 			})
 		}
-		return userController.GetUserById(c, db)
+		return patientController.GetPatientById(c, db)
 	}, m...)
-	e.POST("/user", func(c echo.Context) error {
-		return userController.CreateUser(c, db)
+	e.POST("/patient", func(c echo.Context) error {
+		return patientController.CreatePatient(c, db)
 	})
-	e.PUT("/user", func(c echo.Context) error {
+	e.PUT("/patient", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
 			})
 		}
-		return userController.UpdateUser(c, db)
+		return patientController.UpdatePatient(c, db)
 	}, m...)
-	e.DELETE("/user", func(c echo.Context) error {
+	e.DELETE("/patient", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
 			})
 		}
-		return userController.DeleteUser(c, db)
+		return patientController.DeletePatient(c, db)
 	}, m...)
 }
