@@ -21,7 +21,7 @@ func ValidateToken(c echo.Context) error {
 	_, ok := user.Claims.(*JwtCustomClaims)
 
 	if !ok {
-		return errors.New("invalid token")
+		return errors.New("Invalid token")
 	}
 
 	return nil

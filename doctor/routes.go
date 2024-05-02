@@ -18,7 +18,7 @@ func DoctorRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 		}
 		return doctorController.GetDoctors(c, db)
 	}, m...)
-  e.GET("/doctor/:id", func(c echo.Context) error {
+	e.GET("/doctor/:id", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
@@ -29,7 +29,7 @@ func DoctorRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 	e.POST("/doctor", func(c echo.Context) error {
 		return doctorController.CreateDoctor(c, db)
 	})
-  e.PUT("/doctor/:id", func(c echo.Context) error {
+	e.PUT("/doctor/:id", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
@@ -37,7 +37,7 @@ func DoctorRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 		}
 		return doctorController.UpdateDoctor(c, db)
 	}, m...)
-  e.DELETE("/doctor/:id", func(c echo.Context) error {
+	e.DELETE("/doctor/:id", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),

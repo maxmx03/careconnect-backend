@@ -33,7 +33,7 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 
 func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, error) {
 	query := "SELECT doctor_id, crm, username, password  FROM doctor WHERE doctor_id = ?"
-  doctor := &DoctorModel{}
+	doctor := &DoctorModel{}
 	err := db.QueryRow(query, doctorId).Scan(&doctor.DoctorID, &doctor.Crm, &doctor.Username, &doctor.Password)
 
 	if err != nil {

@@ -9,8 +9,8 @@ type MedicalPrescription struct {
 }
 
 type DoctorModel struct {
-	DoctorID            int                 `json:"doctor_id"`
-	Crm                 string              `json:"crm"`
-	Username            string              `json:"username"`
-	Password            string              `json:"password"`
+	DoctorID int    `json:"doctor_id"`
+	Crm      string `json:"crm"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

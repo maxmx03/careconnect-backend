@@ -18,7 +18,7 @@ func PatientRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 		}
 		return patientController.GetPatients(c, db)
 	}, m...)
-  e.GET("/patient/:id", func(c echo.Context) error {
+	e.GET("/patient/:id", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
@@ -37,7 +37,7 @@ func PatientRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 		}
 		return patientController.UpdatePatient(c, db)
 	}, m...)
-  e.DELETE("/patient/:id", func(c echo.Context) error {
+	e.DELETE("/patient/:id", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
 				"error": err.Error(),
