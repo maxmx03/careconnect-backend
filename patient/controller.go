@@ -16,63 +16,63 @@ type PatientController struct{}
 var patientService PatientRepository = &PatientService{}
 
 func (u *PatientController) GetPatients(c echo.Context, db *sql.DB) error {
-	users, err := patientService.GetPatients(db)
+	patients, err := patientService.GetPatients(db)
 
 	if err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, GetError("Failed to fetch patients"))
+		return c.JSON(http.StatusFound, GetError("Failed to fetch patients"))
 	}
 
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, patients)
 }
 
 func (u *PatientController) GetPatientById(c echo.Context, db *sql.DB) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, GetError("Failed to fetch doctors"))
+		return c.JSON(http.StatusFound, GetError("Failed to fetch doctors"))
 	}
 
-	var user *PatientModel
+	var patient *PatientModel
 
-	if user, err = patientService.GetPatientById(id, db); err != nil {
+	if patient, err = patientService.GetPatientById(id, db); err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, GetError("Failed to fetch patients"))
+		return c.JSON(http.StatusFound, GetError("Failed to fetch patients"))
 	}
 
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, patient)
 }
 
 func (u *PatientController) CreatePatient(c echo.Context, db *sql.DB) error {
-	user := &PatientModel{}
+	patient := &PatientModel{}
 
-	if err := c.Bind(user); err != nil {
+	if err := c.Bind(patient); err != nil {
 		return err
 	}
 
-	err := patientService.CreatePatient(user, db)
+	err := patientService.CreatePatient(patient, db)
 
 	if err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, GetError("Failed to create patient"))
+		return c.JSON(http.StatusBadRequest, GetError("Failed to create patient"))
 	}
 
-	return c.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusCreated, patient)
 }
 
 func (u *PatientController) UpdatePatient(c echo.Context, db *sql.DB) error {
-	user := &PatientModel{}
+	patient := &PatientModel{}
 	var err error
 
-	if err := c.Bind(user); err != nil {
+	if err := c.Bind(patient); err != nil {
 		return err
 	}
 
-	err = patientService.UpdatePatient(user, db)
+	err = patientService.UpdatePatient(patient, db)
 
 	if err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, GetError("Failed to update patient"))
+		return c.JSON(http.StatusBadRequest, GetError("Failed to update patient"))
 	}
 
 	return c.JSON(http.StatusOK, GetOk("Patient updated successfully"))
@@ -82,12 +82,12 @@ func (u *PatientController) DeletePatient(c echo.Context, db *sql.DB) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, GetError("Failed to fetch doctors"))
+		return c.JSON(http.StatusBadRequest, GetError("Failed to fetch doctors"))
 	}
 
 	if err = patientService.DeletePatient(id, db); err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, GetError("Failed to fetch patients"))
+		return c.JSON(http.StatusBadRequest, GetError("Failed to fetch patients"))
 	}
 
 	return c.JSON(http.StatusOK, GetOk("Patient deleted successfully"))
