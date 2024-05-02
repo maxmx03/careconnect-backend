@@ -30,14 +30,14 @@ func (u *DoctorController) GetDoctorById(c echo.Context, db *sql.DB) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		return c.JSON(http.StatusFound, GetError("Invalid doctor id"))
+		return c.JSON(http.StatusNotFound, GetError("Invalid doctor id"))
 	}
 
 	var doctor *DoctorModel
 
 	if doctor, err = doctorService.GetDoctorById(id, db); err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusFound, GetError("Failed to fetch doctor"))
+		return c.JSON(http.StatusNotFound, GetError("Failed to fetch doctor"))
 	}
 
 	return c.JSON(http.StatusOK, doctor)
@@ -70,7 +70,7 @@ func (u *DoctorController) UpdateDoctor(c echo.Context, db *sql.DB) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		return c.JSON(http.StatusFound, GetError("Invalid doctor id"))
+		return c.JSON(http.StatusNotFound, GetError("Invalid doctor id"))
 	}
 
 	err = doctorService.UpdateDoctor(doctor, id, db)

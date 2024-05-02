@@ -20,7 +20,7 @@ func (u *PatientController) GetPatients(c echo.Context, db *sql.DB) error {
 
 	if err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusFound, GetError("Failed to fetch patients"))
+		return c.JSON(http.StatusNotFound, GetError("Failed to fetch patients"))
 	}
 
 	return c.JSON(http.StatusOK, patients)
@@ -30,14 +30,14 @@ func (u *PatientController) GetPatientById(c echo.Context, db *sql.DB) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		return c.JSON(http.StatusFound, GetError("Failed to fetch doctors"))
+		return c.JSON(http.StatusNotFound, GetError("Failed to fetch doctors"))
 	}
 
 	var patient *PatientModel
 
 	if patient, err = patientService.GetPatientById(id, db); err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusFound, GetError("Failed to fetch patients"))
+		return c.JSON(http.StatusNotFound, GetError("Failed to fetch patients"))
 	}
 
 	return c.JSON(http.StatusOK, patient)
