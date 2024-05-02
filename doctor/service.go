@@ -21,7 +21,7 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	for rows.Next() {
 		var doctor DoctorModel
 
-		if err := rows.Scan(&doctor.Doctor_id, &doctor.Crm, &doctor.Username, &doctor.Password); err != nil {
+		if err := rows.Scan(&doctor.DoctorID, &doctor.Crm, &doctor.Username, &doctor.Password); err != nil {
 			return nil, err
 		}
 
@@ -31,12 +31,13 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	return doctors, nil
 }
 
-func (s *DoctorService) GetDoctorById(doctor *DoctorModel, db *sql.DB) (*DoctorModel, error) {
+func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, error) {
 	query := "SELECT doctor_id, crm, username, password  FROM doctor WHERE doctor_id = ?"
-	err := db.QueryRow(query, doctor.Doctor_id).Scan(&doctor.Doctor_id, &doctor.Crm, &doctor.Username, &doctor.Password)
+  doctor := &DoctorModel{}
+	err := db.QueryRow(query, doctorId).Scan(&doctor.DoctorID, &doctor.Crm, &doctor.Username, &doctor.Password)
 
 	if err != nil {
-		return &DoctorModel{}, err
+		return doctor, err
 	}
 
 	return doctor, nil
@@ -53,9 +54,9 @@ func (s *DoctorService) CreateDoctor(doctor *DoctorModel, db *sql.DB) error {
 	return nil
 }
 
-func (s *DoctorService) DeleteDoctor(doctor *DoctorModel, db *sql.DB) error {
-	query := "DELETE FROM doctor WHERE username = ?"
-	_, err := db.Exec(query, doctor.Username)
+func (s *DoctorService) DeleteDoctor(doctorId int, db *sql.DB) error {
+	query := "DELETE FROM doctor WHERE doctor_id = ?"
+	_, err := db.Exec(query, doctorId)
 
 	if err != nil {
 		return err
@@ -64,9 +65,9 @@ func (s *DoctorService) DeleteDoctor(doctor *DoctorModel, db *sql.DB) error {
 	return nil
 }
 
-func (s *DoctorService) UpdateDoctor(doctor *DoctorModel, db *sql.DB) error {
-	query := "UPDATE user SET username=?, password=?, crm=? WHERE doctor_id = ?"
-	result, err := db.Exec(query, doctor.Username, doctor.Password, doctor.Password, doctor.Crm, doctor.Doctor_id)
+func (s *DoctorService) UpdateDoctor(doctor *DoctorModel, doctorId int, db *sql.DB) error {
+	query := "UPDATE doctor SET username=?, password=?, crm=? WHERE doctor_id = ?"
+	result, err := db.Exec(query, doctor.Username, doctor.Password, doctor.Crm, doctorId)
 
 	if err != nil {
 		return err
@@ -78,7 +79,7 @@ func (s *DoctorService) UpdateDoctor(doctor *DoctorModel, db *sql.DB) error {
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("no rows were updated, user not found")
+		return errors.New("no rows were updated, doctor not found")
 	}
 
 	return nil

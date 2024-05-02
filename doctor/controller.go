@@ -3,6 +3,7 @@ package doctor
 import (
 	"database/sql"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
@@ -25,16 +26,17 @@ func (u *DoctorController) GetDoctors(c echo.Context, db *sql.DB) error {
 }
 
 func (u *DoctorController) GetDoctorById(c echo.Context, db *sql.DB) error {
-	doctor := &DoctorModel{}
-	var err error
+	id, err := strconv.Atoi(c.Param("id"))
 
-	if err := c.Bind(doctor); err != nil {
-		return err
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid doctor id"})
 	}
 
-	if doctor, err = doctorService.GetDoctorById(doctor, db); err != nil {
+	var doctor *DoctorModel
+
+	if doctor, err = doctorService.GetDoctorById(id, db); err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch doctors"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch doctor"})
 	}
 
 	return c.JSON(http.StatusOK, doctor)
@@ -59,33 +61,37 @@ func (u *DoctorController) CreateDoctor(c echo.Context, db *sql.DB) error {
 
 func (u *DoctorController) UpdateDoctor(c echo.Context, db *sql.DB) error {
 	doctor := &DoctorModel{}
-	var err error
 
 	if err := c.Bind(doctor); err != nil {
 		return err
 	}
 
-	err = doctorService.UpdateDoctor(doctor, db)
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid doctor id"})
+	}
+
+	err = doctorService.UpdateDoctor(doctor, id, db)
 
 	if err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to update doctor"})
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "Failed to update doctor"})
 	}
 
-	return c.JSON(http.StatusOK, "doctor updated successfully")
+	return c.JSON(http.StatusOK, map[string]string{"message": "doctor updated successfully"})
 }
 
 func (u *DoctorController) DeleteDoctor(c echo.Context, db *sql.DB) error {
-	doctor := &DoctorModel{}
-	var err error
+	id, err := strconv.Atoi(c.Param("id"))
 
-	if err := c.Bind(doctor); err != nil {
-		return err
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Invalid doctor id"})
 	}
 
-	if err = doctorService.DeleteDoctor(doctor, db); err != nil {
+	if err = doctorService.DeleteDoctor(id, db); err != nil {
 		log.Error(err)
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch doctors"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to delete doctor"})
 	}
 
 	return c.JSON(http.StatusOK, "Doctor deleted successfully")

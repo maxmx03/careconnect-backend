@@ -3,6 +3,7 @@ package patient
 import (
 	"database/sql"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
@@ -25,14 +26,15 @@ func (u *PatientController) GetPatients(c echo.Context, db *sql.DB) error {
 }
 
 func (u *PatientController) GetPatientById(c echo.Context, db *sql.DB) error {
-	user := &PatientModel{}
-	var err error
+	id, err := strconv.Atoi(c.Param("id"))
 
-	if err := c.Bind(user); err != nil {
-		return err
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch doctors"})
 	}
 
-	if user, err = patientService.GetPatientById(user, db); err != nil {
+	var user *PatientModel
+
+	if user, err = patientService.GetPatientById(id, db); err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch patients"})
 	}
@@ -76,14 +78,13 @@ func (u *PatientController) UpdatePatient(c echo.Context, db *sql.DB) error {
 }
 
 func (u *PatientController) DeletePatient(c echo.Context, db *sql.DB) error {
-	user := &PatientModel{}
-	var err error
+	id, err := strconv.Atoi(c.Param("id"))
 
-	if err := c.Bind(user); err != nil {
-		return err
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch doctors"})
 	}
 
-	if err = patientService.DeletePatient(user, db); err != nil {
+	if err = patientService.DeletePatient(id, db); err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch patients"})
 	}

@@ -4,21 +4,26 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/maxmx03/careconnect-backend/token"
-	. "github.com/maxmx03/careconnect-backend/user"
 )
 
 type AuthService struct{}
 
 func (s *AuthService) Login(auth *AuthModel, db *sql.DB) (string, error) {
-	query := "SELECT email, password, type FROM user where email = ?"
-	user := &UserModel{}
+	user := &AuthModel{}
+	var query string
 
-	if err := db.QueryRow(query, auth.Email).Scan(&user.Email, &user.Password, &user.Type); err != nil {
+	if auth.Type == "doctor" {
+		query = "SELECT username, password FROM doctor where username = ?"
+	} else {
+		query = "SELECT username, password FROM patient where username = ?"
+	}
+
+	if err := db.QueryRow(query, auth.Username).Scan(&user.Username, &user.Password); err != nil {
 		return "", err
 	}
 
-	if auth.Email == user.Email && auth.Password == user.Password {
-		t, err := token.CreateToken(user.Email, user.Type)
+	if auth.Username == user.Username && auth.Password == user.Password {
+		t, err := token.CreateToken(user.Username, user.Type)
 
 		if err != nil {
 			return "", err

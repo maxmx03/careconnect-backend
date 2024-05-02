@@ -31,12 +31,13 @@ func (s *PatientService) GetPatients(db *sql.DB) ([]PatientModel, error) {
 	return patients, nil
 }
 
-func (s *PatientService) GetPatientById(patient *PatientModel, db *sql.DB) (*PatientModel, error) {
+func (s *PatientService) GetPatientById(patientId int, db *sql.DB) (*PatientModel, error) {
 	query := "SELECT * FROM patient WHERE patient_id = ?"
-	err := db.QueryRow(query, patient.PatientID).Scan(&patient.PatientID, &patient.DateOfBirth, &patient.Username, &patient.Password, &patient.Cpf)
+  patient := &PatientModel{}
+	err := db.QueryRow(query, patientId).Scan(&patient.PatientID, &patient.DateOfBirth, &patient.Username, &patient.Password, &patient.Cpf)
 
 	if err != nil {
-		return &PatientModel{}, err
+		return patient, err
 	}
 
 	return patient, nil
@@ -53,9 +54,9 @@ func (s *PatientService) CreatePatient(patient *PatientModel, db *sql.DB) error 
 	return nil
 }
 
-func (s *PatientService) DeletePatient(patient *PatientModel, db *sql.DB) error {
-	query := "DELETE FROM patient WHERE username = ?"
-	_, err := db.Exec(query, patient.Username)
+func (s *PatientService) DeletePatient(patientId int, db *sql.DB) error {
+	query := "DELETE FROM patient WHERE patient_id = ?"
+	_, err := db.Exec(query, patientId)
 
 	if err != nil {
 		return err
