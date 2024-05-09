@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/maxmx03/careconnect-backend/auth"
 	"github.com/maxmx03/careconnect-backend/doctor"
+	"github.com/maxmx03/careconnect-backend/doctorpatient"
 	"github.com/maxmx03/careconnect-backend/patient"
 	"github.com/maxmx03/careconnect-backend/token"
 )
@@ -45,6 +46,7 @@ func main() {
 
 	auth.AuthRoutes(e, db)
 	doctor.DoctorRoutes(e, db, jwtMiddleware)
-  patient.PatientRoutes(e, db, jwtMiddleware)
+	patient.PatientRoutes(e, db, jwtMiddleware)
+	doctorpatient.DoctorPatientRoutes(e, db, jwtMiddleware)
 	e.Logger.Fatal(e.Start(":3000"))
 }

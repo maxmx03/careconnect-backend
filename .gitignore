@@ -22,3 +22,6 @@ go.work
 
 # Key Private ECDSA
 ec256-private.pem
+
+# golang-migrate
+migrate
