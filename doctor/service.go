@@ -9,7 +9,7 @@ type DoctorService struct{}
 
 func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	var doctors []DoctorModel
-	query := "SELECT doctor_id, crm, username, password FROM doctor"
+	query := "SELECT doctor_id, name, crm, username, password FROM doctor"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	for rows.Next() {
 		var doctor DoctorModel
 
-		if err := rows.Scan(&doctor.DoctorID, &doctor.Crm, &doctor.Username, &doctor.Password); err != nil {
+		if err := rows.Scan(&doctor.DoctorID, &doctor.Name, &doctor.CRM, &doctor.Username, &doctor.Password); err != nil {
 			return nil, err
 		}
 
@@ -32,9 +32,9 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 }
 
 func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, error) {
-	query := "SELECT doctor_id, crm, username, password  FROM doctor WHERE doctor_id = ?"
+	query := "SELECT doctor_id, name, crm, username, password  FROM doctor WHERE doctor_id = ?"
 	doctor := &DoctorModel{}
-	err := db.QueryRow(query, doctorId).Scan(&doctor.DoctorID, &doctor.Crm, &doctor.Username, &doctor.Password)
+	err := db.QueryRow(query, doctorId).Scan(&doctor.DoctorID, &doctor.Name, &doctor.CRM, &doctor.Username, &doctor.Password)
 
 	if err != nil {
 		return doctor, err
@@ -44,8 +44,8 @@ func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, e
 }
 
 func (s *DoctorService) CreateDoctor(doctor *DoctorModel, db *sql.DB) error {
-	query := "INSERT INTO doctor (username, password, crm) VALUES (?, ?, ?)"
-	_, err := db.Exec(query, doctor.Username, doctor.Password, doctor.Crm)
+	query := "INSERT INTO doctor (name, username, password, crm) VALUES (?, ?, ?)"
+	_, err := db.Exec(query, doctor.Name, doctor.Username, doctor.Password, doctor.CRM)
 
 	if err != nil {
 		return err
@@ -66,8 +66,8 @@ func (s *DoctorService) DeleteDoctor(doctorId int, db *sql.DB) error {
 }
 
 func (s *DoctorService) UpdateDoctor(doctor *DoctorModel, doctorId int, db *sql.DB) error {
-	query := "UPDATE doctor SET username=?, password=?, crm=? WHERE doctor_id = ?"
-	result, err := db.Exec(query, doctor.Username, doctor.Password, doctor.Crm, doctorId)
+	query := "UPDATE doctor SET name=? username=?, password=?, crm=? WHERE doctor_id = ?"
+	result, err := db.Exec(query, doctor.Name, doctor.Username, doctor.Password, doctor.CRM, doctorId)
 
 	if err != nil {
 		return err

@@ -21,7 +21,7 @@ func (s *PatientService) GetPatients(db *sql.DB) ([]PatientModel, error) {
 	for rows.Next() {
 		var patient PatientModel
 
-		if err := rows.Scan(&patient.PatientID, &patient.Cpf, &patient.Username, &patient.Password, &patient.DateOfBirth); err != nil {
+		if err := rows.Scan(&patient.PatientID, &patient.Name, &patient.CPF, &patient.Username, &patient.Password, &patient.DateOfBirth); err != nil {
 			return nil, err
 		}
 
@@ -31,10 +31,10 @@ func (s *PatientService) GetPatients(db *sql.DB) ([]PatientModel, error) {
 	return patients, nil
 }
 
-func (s *PatientService) GetPatientById(patientId int, db *sql.DB) (*PatientModel, error) {
+func (s *PatientService) GetPatientById(patientID int, db *sql.DB) (*PatientModel, error) {
 	query := "SELECT * FROM patient WHERE patient_id = ?"
-  patient := &PatientModel{}
-	err := db.QueryRow(query, patientId).Scan(&patient.PatientID, &patient.DateOfBirth, &patient.Username, &patient.Password, &patient.Cpf)
+	patient := &PatientModel{}
+	err := db.QueryRow(query, patientID).Scan(&patient.PatientID, &patient.Name, &patient.DateOfBirth, &patient.Username, &patient.Password, &patient.CPF)
 
 	if err != nil {
 		return patient, err
@@ -44,8 +44,8 @@ func (s *PatientService) GetPatientById(patientId int, db *sql.DB) (*PatientMode
 }
 
 func (s *PatientService) CreatePatient(patient *PatientModel, db *sql.DB) error {
-	query := "INSERT INTO patient (cpf, date_of_birth, username, password) VALUES (?, ?, ?, ?)"
-	_, err := db.Exec(query, patient.Cpf, patient.DateOfBirth, patient.Username, patient.Password)
+	query := "INSERT INTO patient (name, cpf, date_of_birth, username, password) VALUES (?, ?, ?, ?)"
+	_, err := db.Exec(query, patient.Name, patient.CPF, patient.DateOfBirth, patient.Username, patient.Password)
 
 	if err != nil {
 		return err
@@ -54,9 +54,9 @@ func (s *PatientService) CreatePatient(patient *PatientModel, db *sql.DB) error 
 	return nil
 }
 
-func (s *PatientService) DeletePatient(patientId int, db *sql.DB) error {
+func (s *PatientService) DeletePatient(patientID int, db *sql.DB) error {
 	query := "DELETE FROM patient WHERE patient_id = ?"
-	_, err := db.Exec(query, patientId)
+	_, err := db.Exec(query, patientID)
 
 	if err != nil {
 		return err
@@ -66,8 +66,8 @@ func (s *PatientService) DeletePatient(patientId int, db *sql.DB) error {
 }
 
 func (s *PatientService) UpdatePatient(patient *PatientModel, db *sql.DB) error {
-	query := "UPDATE patient SET username=?, password=?, date_of_birth=?, cpf=? WHERE patient_id = ?"
-	result, err := db.Exec(query, patient.Username, patient.Password, patient.DateOfBirth, patient.Cpf)
+	query := "UPDATE patient SET name=?, username=?, password=?, date_of_birth=?, cpf=? WHERE patient_id = ?"
+	result, err := db.Exec(query, patient.Name, patient.Username, patient.Password, patient.DateOfBirth, patient.CPF)
 
 	if err != nil {
 		return err
