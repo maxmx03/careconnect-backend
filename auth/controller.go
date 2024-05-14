@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	. "github.com/maxmx03/careconnect-backend/message"
+	. "github.com/maxmx03/careconnect-backend/feedback"
 )
 
 type AuthController struct{}

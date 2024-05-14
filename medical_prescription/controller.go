@@ -7,14 +7,14 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-	. "github.com/maxmx03/careconnect-backend/message"
+	. "github.com/maxmx03/careconnect-backend/feedback"
 )
 
 type MedicalPrescriptionController struct{}
 
 var medicalPrescriptionService MedicalPrescriptionRepository = &MedicalPrescriptionService{}
 
-func (m *MedicalPrescriptionController) GetMedicalPrescriptionsById(c echo.Context, db *sql.DB) error {
+func (m *MedicalPrescriptionController) GetMedicalPrescriptions(c echo.Context, db *sql.DB) error {
 	doctorID, err := strconv.Atoi(c.QueryParam("doctor_id"))
 	if err != nil {
 		return c.JSON(http.StatusNotFound, GetError("Invalid doctor id"))
@@ -25,7 +25,7 @@ func (m *MedicalPrescriptionController) GetMedicalPrescriptionsById(c echo.Conte
 		return c.JSON(http.StatusNotFound, GetError("Invalid patient id"))
 	}
 
-	medicalPrescriptions, err := medicalPrescriptionService.GetMedicalPrescriptionsById(doctorID, patientID, db)
+	medicalPrescriptions, err := medicalPrescriptionService.GetMedicalPrescriptions(doctorID, patientID, db)
 	if err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusNotFound, GetError("Failed to fetch medical prescriptions"))

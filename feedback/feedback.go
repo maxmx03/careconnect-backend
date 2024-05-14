@@ -1,4 +1,4 @@
-package message
+package feedback
 
 func GetOk(ok string) map[string]string {
 	return map[string]string{

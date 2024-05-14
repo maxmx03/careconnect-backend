@@ -8,7 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-	. "github.com/maxmx03/careconnect-backend/message"
+	. "github.com/maxmx03/careconnect-backend/feedback"
 )
 
 type PatientController struct{}

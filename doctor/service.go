@@ -9,7 +9,7 @@ type DoctorService struct{}
 
 func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	var doctors []DoctorModel
-	query := "SELECT doctor_id, name, crm, username, password FROM doctor"
+	query := "SELECT doctor_id, name, surname, crm, username, password FROM doctor"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	for rows.Next() {
 		var doctor DoctorModel
 
-		if err := rows.Scan(&doctor.DoctorID, &doctor.Name, &doctor.CRM, &doctor.Username, &doctor.Password); err != nil {
+		if err := rows.Scan(&doctor.DoctorID, &doctor.Name, &doctor.Surname, &doctor.CRM, &doctor.Username, &doctor.Password); err != nil {
 			return nil, err
 		}
 
@@ -44,8 +44,8 @@ func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, e
 }
 
 func (s *DoctorService) CreateDoctor(doctor *DoctorModel, db *sql.DB) error {
-	query := "INSERT INTO doctor (name, username, password, crm) VALUES (?, ?, ?)"
-	_, err := db.Exec(query, doctor.Name, doctor.Username, doctor.Password, doctor.CRM)
+	query := "INSERT INTO doctor (name, surname, username, password, crm) VALUES (?, ?, ?)"
+	_, err := db.Exec(query, doctor.Name, doctor.Surname, doctor.Username, doctor.Password, doctor.CRM)
 
 	if err != nil {
 		return err
@@ -79,7 +79,7 @@ func (s *DoctorService) UpdateDoctor(doctor *DoctorModel, doctorId int, db *sql.
 	}
 
 	if rowsAffected == 0 {
-		return errors.New("no rows were updated, doctor not found")
+		return errors.New("No rows were updated, doctor not found")
 	}
 
 	return nil

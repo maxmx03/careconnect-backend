@@ -4,7 +4,7 @@ import "database/sql"
 
 type MedicalPrescriptionService struct{}
 
-func (s *MedicalPrescriptionService) GetMedicalPrescriptionsById(doctorID int, patientID int, db *sql.DB) ([]MedicalPrescriptionModel, error) {
+func (s *MedicalPrescriptionService) GetMedicalPrescriptions(doctorID int, patientID int, db *sql.DB) ([]MedicalPrescriptionModel, error) {
 	var medicalPrescriptions []MedicalPrescriptionModel
 	query := `
 SELECT
@@ -20,7 +20,7 @@ SELECT
 FROM 
     medical_prescription
 INNER JOIN 
-    doctor d ON medical_prescription.doctor_id = d.id
+    doctor d ON medical_prescription.doctor_id = d.doctor_id
 INNER JOIN 
     patient p ON medical_prescription.patient_id = p.patient_id
 WHERE 
