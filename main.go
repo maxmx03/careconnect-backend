@@ -11,6 +11,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/maxmx03/careconnect-backend/auth"
 	"github.com/maxmx03/careconnect-backend/doctor"
+	"github.com/maxmx03/careconnect-backend/medical_prescription"
+	"github.com/maxmx03/careconnect-backend/message"
 	"github.com/maxmx03/careconnect-backend/patient"
 	"github.com/maxmx03/careconnect-backend/token"
 )
@@ -43,8 +45,10 @@ func main() {
 
 	jwtMiddleware := echojwt.WithConfig(config)
 
-	auth.AuthRoutes(e, db)
-	doctor.DoctorRoutes(e, db, jwtMiddleware)
-	patient.PatientRoutes(e, db, jwtMiddleware)
+	auth.Routes(e, db)
+	doctor.Routes(e, db, jwtMiddleware)
+	patient.Routes(e, db, jwtMiddleware)
+	message.Routes(e, db, jwtMiddleware)
+	medicalprescription.Routes(e, db, jwtMiddleware)
 	e.Logger.Fatal(e.Start(":3000"))
 }

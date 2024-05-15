@@ -9,7 +9,7 @@ import (
 
 var messageController = &MessageController{}
 
-func DoctorRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
+func Routes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 	e.GET("/message", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{

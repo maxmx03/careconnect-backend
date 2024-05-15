@@ -9,7 +9,7 @@ import (
 
 var medicalPrescriptionController = &MedicalPrescriptionController{}
 
-func DoctorRoutes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
+func Routes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
 	e.GET("/medicalprescription", func(c echo.Context) error {
 		if err := token.ValidateToken(c); err != nil {
 			return c.JSON(http.StatusForbidden, map[string]string{
