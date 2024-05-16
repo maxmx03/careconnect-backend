@@ -44,7 +44,7 @@ func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, e
 }
 
 func (s *DoctorService) CreateDoctor(doctor *DoctorModel, db *sql.DB) error {
-	query := "INSERT INTO doctor (name, surname, username, password, crm) VALUES (?, ?, ?)"
+	query := "INSERT INTO doctor (name, surname, username, password, crm) VALUES (?, ?, ?, ?, ?)"
 	_, err := db.Exec(query, doctor.Name, doctor.Surname, doctor.Username, doctor.Password, doctor.CRM)
 
 	if err != nil {
