@@ -3,8 +3,6 @@ package user
 import (
 	"database/sql"
 	"errors"
-	"strconv"
-
 	"github.com/maxmx03/careconnect-backend/token"
 )
 

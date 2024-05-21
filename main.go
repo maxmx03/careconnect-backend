@@ -48,7 +48,7 @@ func main() {
 	user.Routes(e, db)
 	doctor.Routes(e, db, jwtMiddleware, token.Auth)
 	patient.Routes(e, db, jwtMiddleware, token.Auth)
-	message.Routes(e, db, jwtMiddleware)
-	medicalprescription.Routes(e, db, jwtMiddleware)
+	message.Routes(e, db, jwtMiddleware, token.Auth)
+	medicalprescription.Routes(e, db, jwtMiddleware, token.Auth)
 	e.Logger.Fatal(e.Start(":3000"))
 }

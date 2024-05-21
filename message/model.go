@@ -1,9 +1,9 @@
 package message
 
 type MessageModel struct {
-	MessageID        int `json:"message_id"`
-	SenderID         int
-	RecipientID      int
+	MessageID        int    `json:"message_id"`
+	SenderID         int    `json:"sender_id"`
+	RecipientID      int    `json:"recipient_id"`
 	DateTime         string `json:"date"`
 	Content          string `json:"content"`
 	SenderName       string `json:"sender_name"`

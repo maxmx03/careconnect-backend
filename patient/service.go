@@ -56,7 +56,7 @@ func (s *PatientService) Create(patient *PatientModel, db *sql.DB) error {
 
 func (s *PatientService) Update(patient *PatientModel, userID int, db *sql.DB) error {
 	query := "UPDATE patient SET name=?, surname=?, cpf=? date_of_birth=? WHERE user_id = ?"
-	result, err := db.Exec(query, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth, patient.Username, patient.Password, userID)
+	result, err := db.Exec(query, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth, userID)
 
 	if err != nil {
 		return err

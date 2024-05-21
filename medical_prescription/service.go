@@ -4,12 +4,12 @@ import "database/sql"
 
 type MedicalPrescriptionService struct{}
 
-func (s *MedicalPrescriptionService) GetMedicalPrescriptions(doctorID int, patientID int, db *sql.DB) ([]MedicalPrescriptionModel, error) {
+func (s *MedicalPrescriptionService) GetAll(doctorID int, patientID int, db *sql.DB) ([]MedicalPrescriptionModel, error) {
 	var medicalPrescriptions []MedicalPrescriptionModel
 	query := `
 SELECT
-    medical_prescription.prescription_id, 
-    medical_prescription.date, 
+    medical_prescription.prescription_id,
+    medical_prescription.date,
     medical_prescription.description,
     d.doctor_id, 
     d.name AS doctor_name, 
@@ -49,7 +49,7 @@ WHERE
 	return medicalPrescriptions, nil
 }
 
-func (s *MedicalPrescriptionService) CreateMedicalPrescription(medicalPrescription *MedicalPrescriptionModel, db *sql.DB) error {
+func (s *MedicalPrescriptionService) Create(medicalPrescription *MedicalPrescriptionModel, db *sql.DB) error {
 	query := `
     INSERT INTO medical_prescription (date, description, doctor_id, patient_id)
     VALUES (?, ?, ?, ?)
@@ -61,7 +61,7 @@ func (s *MedicalPrescriptionService) CreateMedicalPrescription(medicalPrescripti
 	return nil
 }
 
-func (s *MedicalPrescriptionService) UpdateMedicalPrescription(medicalPrescription *MedicalPrescriptionModel, db *sql.DB) error {
+func (s *MedicalPrescriptionService) Update(medicalPrescription *MedicalPrescriptionModel, db *sql.DB) error {
 	query := `
     UPDATE medical_prescription
     SET date = ?, description = ?
@@ -74,7 +74,7 @@ func (s *MedicalPrescriptionService) UpdateMedicalPrescription(medicalPrescripti
 	return nil
 }
 
-func (s *MedicalPrescriptionService) DeleteMedicalPrescription(prescriptionID int, db *sql.DB) error {
+func (s *MedicalPrescriptionService) Delete(prescriptionID int, db *sql.DB) error {
 	query := `
     DELETE FROM medical_prescription
     WHERE prescription_id = ?

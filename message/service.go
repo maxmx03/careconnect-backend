@@ -4,7 +4,7 @@ import "database/sql"
 
 type MessageService struct{}
 
-func (s *MessageService) GetMessages(doctorID int, patientID int, db *sql.DB) ([]MessageModel, error) {
+func (s *MessageService) GetAll(doctorID int, patientID int, db *sql.DB) ([]MessageModel, error) {
 	var messages []MessageModel
 	query := `
     SELECT 

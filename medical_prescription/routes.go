@@ -3,46 +3,25 @@ package medicalprescription
 import (
 	"database/sql"
 	"github.com/labstack/echo/v4"
-	// "github.com/maxmx03/careconnect-backend/token"
-	// "net/http"
 )
 
 var medicalPrescriptionController = &MedicalPrescriptionController{}
 
 func Routes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
-	// e.GET("/medicalprescription", func(c echo.Context) error {
-	// 	if err := token.ValidateToken(c); err != nil {
-	// 		return c.JSON(http.StatusForbidden, map[string]string{
-	// 			"error": err.Error(),
-	// 		})
-	// 	}
-	// 	return medicalPrescriptionController.GetMedicalPrescriptions(c, db)
-	// }, m...)
-	//
-	// e.POST("/medicalprescription", func(c echo.Context) error {
-	// 	if err := token.ValidateToken(c); err != nil {
-	// 		return c.JSON(http.StatusForbidden, map[string]string{
-	// 			"error": err.Error(),
-	// 		})
-	// 	}
-	// 	return medicalPrescriptionController.CreateMedicalPrescription(c, db)
-	// }, m...)
-	//
-	// e.PUT("/medicalprescription/:id", func(c echo.Context) error {
-	// 	if err := token.ValidateToken(c); err != nil {
-	// 		return c.JSON(http.StatusForbidden, map[string]string{
-	// 			"error": err.Error(),
-	// 		})
-	// 	}
-	// 	return medicalPrescriptionController.UpdateMedicalPrescription(c, db)
-	// }, m...)
-	//
-	// e.DELETE("/medicalprescription/:id", func(c echo.Context) error {
-	// 	if err := token.ValidateToken(c); err != nil {
-	// 		return c.JSON(http.StatusForbidden, map[string]string{
-	// 			"error": err.Error(),
-	// 		})
-	// 	}
-	// 	return medicalPrescriptionController.DeleteMedicalPrescription(c, db)
-	// }, m...)
+	var url = "/prescriptions"
+	g := e.Group(url)
+	g.Use(m...)
+
+	g.GET("/medicalprescription", func(c echo.Context) error {
+		return medicalPrescriptionController.GetAll(c, db)
+	})
+	g.POST("/medicalprescription", func(c echo.Context) error {
+		return medicalPrescriptionController.Create(c, db)
+	})
+	g.PUT("/medicalprescription/:id", func(c echo.Context) error {
+		return medicalPrescriptionController.Update(c, db)
+	})
+	g.DELETE("/medicalprescription/:id", func(c echo.Context) error {
+		return medicalPrescriptionController.Delete(c, db)
+	})
 }
