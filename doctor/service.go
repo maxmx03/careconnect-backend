@@ -7,9 +7,9 @@ import (
 
 type DoctorService struct{}
 
-func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
+func (s *DoctorService) GetAll(db *sql.DB) ([]DoctorModel, error) {
 	var doctors []DoctorModel
-	query := "SELECT doctor_id, name, surname, crm, username, password FROM doctor"
+	query := "SELECT name, surname, crm FROM doctor"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	for rows.Next() {
 		var doctor DoctorModel
 
-		if err := rows.Scan(&doctor.DoctorID, &doctor.Name, &doctor.Surname, &doctor.CRM, &doctor.Username, &doctor.Password); err != nil {
+		if err := rows.Scan(&doctor.Name, &doctor.Surname, &doctor.CRM); err != nil {
 			return nil, err
 		}
 
@@ -31,10 +31,10 @@ func (s *DoctorService) GetDoctors(db *sql.DB) ([]DoctorModel, error) {
 	return doctors, nil
 }
 
-func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, error) {
-	query := "SELECT doctor_id, name, crm, username, password  FROM doctor WHERE doctor_id = ?"
+func (s *DoctorService) GetById(userID int, db *sql.DB) (*DoctorModel, error) {
+	query := "SELECT name, surname, crm FROM doctor WHERE user_id = ?"
 	doctor := &DoctorModel{}
-	err := db.QueryRow(query, doctorId).Scan(&doctor.DoctorID, &doctor.Name, &doctor.CRM, &doctor.Username, &doctor.Password)
+	err := db.QueryRow(query, userID).Scan(&doctor.Name, &doctor.Surname, &doctor.CRM)
 
 	if err != nil {
 		return doctor, err
@@ -43,9 +43,9 @@ func (s *DoctorService) GetDoctorById(doctorId int, db *sql.DB) (*DoctorModel, e
 	return doctor, nil
 }
 
-func (s *DoctorService) CreateDoctor(doctor *DoctorModel, db *sql.DB) error {
-	query := "INSERT INTO doctor (name, surname, username, password, crm) VALUES (?, ?, ?, ?, ?)"
-	_, err := db.Exec(query, doctor.Name, doctor.Surname, doctor.Username, doctor.Password, doctor.CRM)
+func (s *DoctorService) Create(doctor *DoctorModel, db *sql.DB) error {
+	query := "INSERT INTO doctor (user_id, name, surname, crm) VALUES (?, ?, ?, ?)"
+	_, err := db.Exec(query, doctor.UserID, doctor.Name, doctor.Surname, doctor.CRM)
 
 	if err != nil {
 		return err
@@ -54,20 +54,9 @@ func (s *DoctorService) CreateDoctor(doctor *DoctorModel, db *sql.DB) error {
 	return nil
 }
 
-func (s *DoctorService) DeleteDoctor(doctorId int, db *sql.DB) error {
-	query := "DELETE FROM doctor WHERE doctor_id = ?"
-	_, err := db.Exec(query, doctorId)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *DoctorService) UpdateDoctor(doctor *DoctorModel, doctorId int, db *sql.DB) error {
-	query := "UPDATE doctor SET name=? username=?, password=?, crm=? WHERE doctor_id = ?"
-	result, err := db.Exec(query, doctor.Name, doctor.Username, doctor.Password, doctor.CRM, doctorId)
+func (s *DoctorService) Update(doctor *DoctorModel, userID int, db *sql.DB) error {
+	query := "UPDATE doctor SET name=?, surname=?, crm=? WHERE user_id = ?"
+	result, err := db.Exec(query, doctor.Name, doctor.Surname, doctor.CRM, userID)
 
 	if err != nil {
 		return err
@@ -80,6 +69,17 @@ func (s *DoctorService) UpdateDoctor(doctor *DoctorModel, doctorId int, db *sql.
 
 	if rowsAffected == 0 {
 		return errors.New("No rows were updated, doctor not found")
+	}
+
+	return nil
+}
+
+func (s *DoctorService) Delete(userID int, db *sql.DB) error {
+	query := "DELETE FROM doctor WHERE user_id = ?"
+	_, err := db.Exec(query, userID)
+
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -25,3 +25,6 @@ ec256-private.pem
 
 # golang-migrate
 migrate
+
+# notes
+notes.txt

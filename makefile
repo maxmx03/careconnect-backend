@@ -4,6 +4,7 @@
 migrate_install:
 	curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.1/migrate.linux-amd64.tar.gz | tar xvz
 migrate_create:
+	./migrate create -ext sql -dir mysql/migrations -seq create_user_table
 	./migrate create -ext sql -dir mysql/migrations -seq create_doctor_table
 	./migrate create -ext sql -dir mysql/migrations -seq create_patient_table
 	./migrate create -ext sql -dir mysql/migrations -seq create_medicalprescription_table

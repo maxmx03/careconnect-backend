@@ -7,74 +7,93 @@ type MessageService struct{}
 func (s *MessageService) GetMessages(doctorID int, patientID int, db *sql.DB) ([]MessageModel, error) {
 	var messages []MessageModel
 	query := `
-SELECT
-    message.message_id,
-    message.datetime,
-    message.content,
-    d.doctor_id,
-    d.name AS doctor_name,
-    d.surname AS doctor_surname,
-    p.patient_id,
-    p.name AS patient_name,
-    p.surname AS patient_surname
-FROM
-    message
-INNER JOIN 
-    doctor d ON message.doctor_id = d.doctor_id
-INNER JOIN 
-    patient p ON message.patient_id = p.patient_id
-WHERE 
-    d.doctor_id = ? AND p.patient_id = ?
-  `
-	rows, err := db.Query(query, doctorID, patientID)
+    SELECT 
+        m.message_id,
+        m.datetime,
+        m.content,
+        sender.user_type AS sender_type,
+        COALESCE(sender_patient.name, sender_doctor.name) AS sender_name,
+        COALESCE(sender_patient.surname, sender_doctor.surname) AS sender_surname,
+        recipient.user_type AS recipient_type,
+        COALESCE(recipient_patient.name, recipient_doctor.name) AS recipient_name,
+        COALESCE(recipient_patient.surname, recipient_doctor.surname) AS recipient_surname
+    FROM 
+        message m
+    INNER JOIN 
+        user sender ON m.sender_id = sender.user_id
+    LEFT JOIN 
+        patient sender_patient ON sender.user_id = sender_patient.user_id
+    LEFT JOIN 
+        doctor sender_doctor ON sender.user_id = sender_doctor.user_id
+    INNER JOIN 
+        user recipient ON m.recipient_id = recipient.user_id
+    LEFT JOIN 
+        patient recipient_patient ON recipient.user_id = recipient_patient.user_id
+    LEFT JOIN 
+        doctor recipient_doctor ON recipient.user_id = recipient_doctor.user_id
+    WHERE 
+        (sender.user_id = ? AND sender.user_type = 'doctor') OR 
+        (recipient.user_id = ? AND recipient.user_type = 'patient');
+    `
 
+	rows, err := db.Query(query, doctorID, patientID)
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	for rows.Next() {
 		var message MessageModel
-
-		if err := rows.Scan(&message.DoctorID, &message.DateTime, &message.Content, &message.DoctorID,
-			&message.DoctorName, &message.DoctorSurname, &message.PatientID,
-			&message.PatientName, &message.PatientSurname); err != nil {
+		err := rows.Scan(
+			&message.MessageID,
+			&message.DateTime,
+			&message.Content,
+			&message.SenderType,
+			&message.SenderName,
+			&message.SenderSurname,
+			&message.RecipientType,
+			&message.RecipientName,
+			&message.RecipientSurname,
+		)
+		if err != nil {
 			return nil, err
 		}
-
 		messages = append(messages, message)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return messages, nil
 }
 
-func (s *MessageService) CreateMessage(message *MessageModel, db *sql.DB) error {
+func (s *MessageService) Create(message *MessageModel, db *sql.DB) error {
 	query := `
-    INSERT INTO message (doctor_id, patient_id, datetime, content)
+    INSERT INTO message (sender_id, recipient_id, datetime, content)
     VALUES (?, ?, ?, ?)
     `
-	_, err := db.Exec(query, message.DoctorID, message.PatientID, message.DateTime, message.Content)
+	_, err := db.Exec(query, message.SenderID, message.RecipientID, message.DateTime, message.Content)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *MessageService) UpdateMessage(message *MessageModel, db *sql.DB) error {
+func (s *MessageService) Update(message *MessageModel, db *sql.DB) error {
 	query := `
     UPDATE message
-    SET datetime = ?, content = ?
+    SET sender_id = ?, recipient_id = ?, datetime = ?, content = ?
     WHERE message_id = ?
     `
-	_, err := db.Exec(query, message.DateTime, message.Content, message.MessageID)
+	_, err := db.Exec(query, message.SenderID, message.RecipientID, message.DateTime, message.Content, message.MessageID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *MessageService) DeleteMessage(messageID int, db *sql.DB) error {
+func (s *MessageService) Delete(messageID int, db *sql.DB) error {
 	query := `
     DELETE FROM message
     WHERE message_id = ?

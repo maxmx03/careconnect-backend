@@ -7,9 +7,9 @@ import (
 
 type PatientService struct{}
 
-func (s *PatientService) GetPatients(db *sql.DB) ([]PatientModel, error) {
+func (s *PatientService) GetAll(db *sql.DB) ([]PatientModel, error) {
 	var patients []PatientModel
-	query := "SELECT * FROM patient"
+	query := "SELECT name, surname, cpf, date_of_birth FROM patient"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func (s *PatientService) GetPatients(db *sql.DB) ([]PatientModel, error) {
 	for rows.Next() {
 		var patient PatientModel
 
-		if err := rows.Scan(&patient.PatientID, &patient.Name, &patient.CPF, &patient.Username, &patient.Password, &patient.DateOfBirth); err != nil {
+		if err := rows.Scan(&patient.Name, &patient.Surname, &patient.CPF, &patient.DateOfBirth); err != nil {
 			return nil, err
 		}
 
@@ -31,10 +31,10 @@ func (s *PatientService) GetPatients(db *sql.DB) ([]PatientModel, error) {
 	return patients, nil
 }
 
-func (s *PatientService) GetPatientById(patientID int, db *sql.DB) (*PatientModel, error) {
-	query := "SELECT * FROM patient WHERE patient_id = ?"
+func (s *PatientService) GetById(userID int, db *sql.DB) (*PatientModel, error) {
+	query := "SELECT name, surname, cpf, date_of_birth FROM patient WHERE user_id = ?"
 	patient := &PatientModel{}
-	err := db.QueryRow(query, patientID).Scan(&patient.PatientID, &patient.Name, &patient.DateOfBirth, &patient.Username, &patient.Password, &patient.CPF)
+	err := db.QueryRow(query, userID).Scan(&patient.Name, &patient.Surname, &patient.CPF, &patient.DateOfBirth)
 
 	if err != nil {
 		return patient, err
@@ -43,9 +43,9 @@ func (s *PatientService) GetPatientById(patientID int, db *sql.DB) (*PatientMode
 	return patient, nil
 }
 
-func (s *PatientService) CreatePatient(patient *PatientModel, db *sql.DB) error {
-	query := "INSERT INTO patient (name, cpf, date_of_birth, username, password) VALUES (?, ?, ?, ?)"
-	_, err := db.Exec(query, patient.Name, patient.CPF, patient.DateOfBirth, patient.Username, patient.Password)
+func (s *PatientService) Create(patient *PatientModel, db *sql.DB) error {
+	query := "INSERT INTO patient (user_id, name, surname, cpf, date_of_birth) VALUES (?, ?, ?, ?, ?)"
+	_, err := db.Exec(query, patient.UserID, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth)
 
 	if err != nil {
 		return err
@@ -54,20 +54,9 @@ func (s *PatientService) CreatePatient(patient *PatientModel, db *sql.DB) error 
 	return nil
 }
 
-func (s *PatientService) DeletePatient(patientID int, db *sql.DB) error {
-	query := "DELETE FROM patient WHERE patient_id = ?"
-	_, err := db.Exec(query, patientID)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *PatientService) UpdatePatient(patient *PatientModel, db *sql.DB) error {
-	query := "UPDATE patient SET name=?, username=?, password=?, date_of_birth=?, cpf=? WHERE patient_id = ?"
-	result, err := db.Exec(query, patient.Name, patient.Username, patient.Password, patient.DateOfBirth, patient.CPF)
+func (s *PatientService) Update(patient *PatientModel, userID int, db *sql.DB) error {
+	query := "UPDATE patient SET name=?, surname=?, cpf=? date_of_birth=? WHERE user_id = ?"
+	result, err := db.Exec(query, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth, patient.Username, patient.Password, userID)
 
 	if err != nil {
 		return err
@@ -80,6 +69,17 @@ func (s *PatientService) UpdatePatient(patient *PatientModel, db *sql.DB) error 
 
 	if rowsAffected == 0 {
 		return errors.New("no rows were updated, patient not found")
+	}
+
+	return nil
+}
+
+func (s *PatientService) Delete(userID int, db *sql.DB) error {
+	query := "DELETE FROM patient WHERE patient_id = ?"
+	_, err := db.Exec(query, userID)
+
+	if err != nil {
+		return err
 	}
 
 	return nil

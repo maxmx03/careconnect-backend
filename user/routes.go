@@ -1,14 +1,14 @@
-package auth
+package user
 
 import (
 	"database/sql"
 	"github.com/labstack/echo/v4"
 )
 
-var authController = &AuthController{}
+var userController = &UserController{}
 
 func Routes(e *echo.Echo, db *sql.DB) {
 	e.POST("/login", func(c echo.Context) error {
-		return authController.Login(c, db)
+		return userController.Login(c, db)
 	})
 }

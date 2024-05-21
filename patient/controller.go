@@ -15,8 +15,8 @@ type PatientController struct{}
 
 var patientService PatientRepository = &PatientService{}
 
-func (u *PatientController) GetPatients(c echo.Context, db *sql.DB) error {
-	patients, err := patientService.GetPatients(db)
+func (u *PatientController) GetAll(c echo.Context, db *sql.DB) error {
+	patients, err := patientService.GetAll(db)
 
 	if err != nil {
 		log.Error(err)
@@ -26,16 +26,16 @@ func (u *PatientController) GetPatients(c echo.Context, db *sql.DB) error {
 	return c.JSON(http.StatusOK, patients)
 }
 
-func (u *PatientController) GetPatientById(c echo.Context, db *sql.DB) error {
+func (u *PatientController) GetById(c echo.Context, db *sql.DB) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		return c.JSON(http.StatusNotFound, GetError("Failed to fetch doctors"))
+		return c.JSON(http.StatusNotFound, GetError("Failed to fetch patients"))
 	}
 
 	var patient *PatientModel
 
-	if patient, err = patientService.GetPatientById(id, db); err != nil {
+	if patient, err = patientService.GetById(id, db); err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusNotFound, GetError("Failed to fetch patients"))
 	}
@@ -43,32 +43,37 @@ func (u *PatientController) GetPatientById(c echo.Context, db *sql.DB) error {
 	return c.JSON(http.StatusOK, patient)
 }
 
-func (u *PatientController) CreatePatient(c echo.Context, db *sql.DB) error {
+func (u *PatientController) Create(c echo.Context, db *sql.DB) error {
 	patient := &PatientModel{}
 
 	if err := c.Bind(patient); err != nil {
 		return err
 	}
 
-	err := patientService.CreatePatient(patient, db)
+	err := patientService.Create(patient, db)
 
 	if err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusBadRequest, GetError("Failed to create patient"))
 	}
 
-	return c.JSON(http.StatusCreated, patient)
+	return c.JSON(http.StatusCreated, GetOk("Patient created successfully"))
 }
 
-func (u *PatientController) UpdatePatient(c echo.Context, db *sql.DB) error {
+func (u *PatientController) Update(c echo.Context, db *sql.DB) error {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		return c.JSON(http.StatusNotFound, GetError("Failed to fetch patients"))
+	}
+
 	patient := &PatientModel{}
-	var err error
 
 	if err := c.Bind(patient); err != nil {
 		return err
 	}
 
-	err = patientService.UpdatePatient(patient, db)
+	err = patientService.Update(patient, id, db)
 
 	if err != nil {
 		log.Error(err)
@@ -78,14 +83,14 @@ func (u *PatientController) UpdatePatient(c echo.Context, db *sql.DB) error {
 	return c.JSON(http.StatusOK, GetOk("Patient updated successfully"))
 }
 
-func (u *PatientController) DeletePatient(c echo.Context, db *sql.DB) error {
+func (u *PatientController) Delete(c echo.Context, db *sql.DB) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, GetError("Failed to fetch doctors"))
 	}
 
-	if err = patientService.DeletePatient(id, db); err != nil {
+	if err = patientService.Delete(id, db); err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusBadRequest, GetError("Failed to fetch patients"))
 	}

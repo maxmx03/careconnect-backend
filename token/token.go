@@ -9,14 +9,14 @@ import (
 )
 
 type JwtCustomClaims struct {
-	Name     string `json:"name"`
-	UserType string `json:"admin"`
+	UserID   int `json:"user_id"`
+	UserType string `json:"user_type"`
 	jwt.RegisteredClaims
 }
 
 type SignKey string
 
-func ValidateToken(c echo.Context) error {
+func validate(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	_, ok := user.Claims.(*JwtCustomClaims)
 
@@ -27,7 +27,7 @@ func ValidateToken(c echo.Context) error {
 	return nil
 }
 
-func CreateToken(email string, userType string) (string, error) {
+func Create(userID int, userType string) (string, error) {
 	privateKey, err := os.ReadFile("ec256-private.pem")
 
 	if err != nil {
@@ -35,7 +35,7 @@ func CreateToken(email string, userType string) (string, error) {
 	}
 
 	claims := &JwtCustomClaims{
-		email,
+		userID,
 		userType,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
@@ -49,4 +49,18 @@ func CreateToken(email string, userType string) (string, error) {
 	}
 
 	return t, nil
+}
+
+func Auth(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		if err := next(c); err != nil {
+			c.Error(err)
+		}
+
+		if err := validate(c); err != nil {
+			c.Error(err)
+		}
+
+		return nil
+	}
 }

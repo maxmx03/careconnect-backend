@@ -1,4 +1,4 @@
-package auth
+package user
 
 import (
 	"database/sql"
@@ -8,12 +8,12 @@ import (
 	. "github.com/maxmx03/careconnect-backend/feedback"
 )
 
-type AuthController struct{}
+type UserController struct{}
 
-var authService AuthRepository = &AuthService{}
+var userService UserRepository = &UserService{}
 
-func (a *AuthController) Login(c echo.Context, db *sql.DB) error {
-	auth := &AuthModel{}
+func (a *UserController) Login(c echo.Context, db *sql.DB) error {
+	auth := &UserModel{}
 	var err error
 	var token string
 
@@ -21,7 +21,7 @@ func (a *AuthController) Login(c echo.Context, db *sql.DB) error {
 		return err
 	}
 
-	if token, err = authService.Login(auth, db); err != nil {
+	if token, err = userService.Login(auth, db); err != nil {
 		return c.JSON(http.StatusForbidden, GetError(err.Error()))
 	}
 

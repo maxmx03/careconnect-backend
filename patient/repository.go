@@ -5,9 +5,9 @@ import (
 )
 
 type PatientRepository interface {
-	GetPatients(db *sql.DB) ([]PatientModel, error)
-	GetPatientById(patientID int, db *sql.DB) (*PatientModel, error)
-	CreatePatient(patient *PatientModel, db *sql.DB) error
-	UpdatePatient(patient *PatientModel, db *sql.DB) error
-	DeletePatient(patientID int, db *sql.DB) error
+	GetAll(db *sql.DB) ([]PatientModel, error)
+	GetById(userID int, db *sql.DB) (*PatientModel, error)
+	Create(patient *PatientModel, db *sql.DB) error
+	Update(patient *PatientModel, userID int, db *sql.DB) error
+	Delete(userID int, db *sql.DB) error
 }

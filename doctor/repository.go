@@ -5,9 +5,9 @@ import (
 )
 
 type DoctorRepository interface {
-	GetDoctors(db *sql.DB) ([]DoctorModel, error)
-	GetDoctorById(doctorID int, db *sql.DB) (*DoctorModel, error)
-	CreateDoctor(doctor *DoctorModel, db *sql.DB) error
-	UpdateDoctor(doctor *DoctorModel, doctorID int, db *sql.DB) error
-	DeleteDoctor(doctorID int, db *sql.DB) error
+	GetAll(db *sql.DB) ([]DoctorModel, error)
+	GetById(userID int, db *sql.DB) (*DoctorModel, error)
+	Create(doctor *DoctorModel, db *sql.DB) error
+	Update(doctor *DoctorModel, userID int, db *sql.DB) error
+	Delete(userID int, db *sql.DB) error
 }
