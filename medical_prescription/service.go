@@ -68,9 +68,11 @@ func (s *MedicalPrescriptionService) Update(medicalPrescription *MedicalPrescrip
     WHERE prescription_id = ?
     `
 	_, err := db.Exec(query, medicalPrescription.Date, medicalPrescription.Description, medicalPrescription.PrescriptionID)
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 

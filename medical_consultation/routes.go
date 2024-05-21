@@ -1,27 +1,27 @@
-package medicalprescription
+package medicalconsultation
 
 import (
 	"database/sql"
 	"github.com/labstack/echo/v4"
 )
 
-var medicalPrescriptionController = &MedicalPrescriptionController{}
+var medicalConsultationController = &MedicalConsultationController{}
 
 func Routes(e *echo.Echo, db *sql.DB, m ...echo.MiddlewareFunc) {
-	var url = "/prescriptions"
+	var url = "/consultations"
 	g := e.Group(url)
 	g.Use(m...)
 
 	g.GET("", func(c echo.Context) error {
-		return medicalPrescriptionController.GetAll(c, db)
+		return medicalConsultationController.GetAll(c, db)
 	})
 	g.POST("", func(c echo.Context) error {
-		return medicalPrescriptionController.Create(c, db)
+		return medicalConsultationController.Create(c, db)
 	})
 	g.PUT("/:id", func(c echo.Context) error {
-		return medicalPrescriptionController.Update(c, db)
+		return medicalConsultationController.Update(c, db)
 	})
 	g.DELETE("/:id", func(c echo.Context) error {
-		return medicalPrescriptionController.Delete(c, db)
+		return medicalConsultationController.Delete(c, db)
 	})
 }
