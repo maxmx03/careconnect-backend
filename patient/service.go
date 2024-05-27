@@ -9,7 +9,7 @@ type PatientService struct{}
 
 func (s *PatientService) GetAll(db *sql.DB) ([]PatientModel, error) {
 	var patients []PatientModel
-	query := "SELECT name, surname, cpf, date_of_birth FROM patient"
+	query := "SELECT name, surname, cpf, date_of_birth, description FROM patient"
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func (s *PatientService) GetAll(db *sql.DB) ([]PatientModel, error) {
 	for rows.Next() {
 		var patient PatientModel
 
-		if err := rows.Scan(&patient.Name, &patient.Surname, &patient.CPF, &patient.DateOfBirth); err != nil {
+		if err := rows.Scan(&patient.Name, &patient.Surname, &patient.CPF, &patient.DateOfBirth, &patient.Description); err != nil {
 			return nil, err
 		}
 
@@ -32,9 +32,9 @@ func (s *PatientService) GetAll(db *sql.DB) ([]PatientModel, error) {
 }
 
 func (s *PatientService) GetById(userID int, db *sql.DB) (*PatientModel, error) {
-	query := "SELECT name, surname, cpf, date_of_birth FROM patient WHERE user_id = ?"
+	query := "SELECT name, surname, cpf, date_of_birth, description FROM patient WHERE user_id = ?"
 	patient := &PatientModel{}
-	err := db.QueryRow(query, userID).Scan(&patient.Name, &patient.Surname, &patient.CPF, &patient.DateOfBirth)
+  err := db.QueryRow(query, userID).Scan(&patient.Name, &patient.Surname, &patient.CPF, &patient.DateOfBirth, &patient.Description)
 
 	if err != nil {
 		return patient, err
@@ -44,8 +44,8 @@ func (s *PatientService) GetById(userID int, db *sql.DB) (*PatientModel, error) 
 }
 
 func (s *PatientService) Create(patient *PatientModel, db *sql.DB) error {
-	query := "INSERT INTO patient (user_id, name, surname, cpf, date_of_birth) VALUES (?, ?, ?, ?, ?)"
-	_, err := db.Exec(query, patient.UserID, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth)
+	query := "INSERT INTO patient (user_id, name, surname, cpf, date_of_birth, description) VALUES (?, ?, ?, ?, ?, ?)"
+	_, err := db.Exec(query, patient.UserID, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth, patient.Description)
 
 	if err != nil {
 		return err
@@ -55,8 +55,8 @@ func (s *PatientService) Create(patient *PatientModel, db *sql.DB) error {
 }
 
 func (s *PatientService) Update(patient *PatientModel, userID int, db *sql.DB) error {
-	query := "UPDATE patient SET name=?, surname=?, cpf=? date_of_birth=? WHERE user_id = ?"
-	result, err := db.Exec(query, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth, userID)
+	query := "UPDATE patient SET name=?, surname=?, cpf=? date_of_birth=?, description=? WHERE user_id = ?"
+	result, err := db.Exec(query, patient.Name, patient.Surname, patient.CPF, patient.DateOfBirth, patient.Description, userID)
 
 	if err != nil {
 		return err

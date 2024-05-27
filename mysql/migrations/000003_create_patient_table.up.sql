@@ -5,6 +5,7 @@ CREATE TABLE patient (
     surname VARCHAR(255) NOT NULL,
     cpf VARCHAR(255) NOT NULL,
     date_of_birth DATE NOT NULL,
+    description VARCHAR(255) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 

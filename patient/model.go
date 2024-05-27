@@ -7,4 +7,5 @@ type PatientModel struct {
 	Surname     string `json:"surname"`
 	CPF         string `json:"cpf"`
 	DateOfBirth string `json:"date_of_birth"`
+  Description string `json:"description"`
 }
