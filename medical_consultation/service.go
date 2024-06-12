@@ -10,23 +10,23 @@ type MedicalConsultationService struct{}
 func (r *MedicalConsultationService) GetAll(doctorID int, patientID int, db *sql.DB) ([]MedicalConsultationModel, error) {
 	var medicalConsultations []MedicalConsultationModel
 	query := `
-    SELECT 
-        mc.consultation_id, 
-        mc.doctor_id, 
-        mc.patient_id, 
-        mc.date_time, 
+    SELECT
+        mc.consultation_id,
+        mc.doctor_id,
+        mc.patient_id,
+        mc.date_time,
         mc.description,
         d.name AS doctor_name,
         d.surname AS doctor_surname,
         p.name AS patient_name,
         p.surname AS patient_surname
-    FROM 
+    FROM
         medical_consultation mc
-    INNER JOIN 
+    INNER JOIN
         doctor d ON mc.doctor_id = d.doctor_id
-    INNER JOIN 
+    INNER JOIN
         patient p ON mc.patient_id = p.patient_id
-    WHERE 
+    WHERE
         d.doctor_id = ? AND p.patient_id = ?
     `
 	rows, err := db.Query(query, doctorID, patientID)
