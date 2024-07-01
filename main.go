@@ -22,7 +22,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
 
-	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/careconnect")
+	db, err := sql.Open("mysql", "root:password@tcp(localhost:3307)/careconnect")
 
 	if err != nil {
 		panic(err)
