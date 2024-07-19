@@ -14,7 +14,7 @@ Este projeto é uma aplicação de gerenciamento de consultas médicas utilizand
 - **Clone o repositório**
 
 ```sh
-git clone https://github.com/seu-usuario/careconnect.git
+git clone https://github.com/maxmx03/careconnect.git
 cd careconnect
 ```
 
